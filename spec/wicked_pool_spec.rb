@@ -16,7 +16,8 @@ RSpec.describe WickedPool do
       it "rolls the dice and returns a result object" do
         args = %w[d12 d8]
         subject = described_class.new(dice: args)
-        expect(subject.roll).to be_instance_of(WickedResult)
+        expect(subject.roll).to be_instance_of(WickedPool)
+        expect(subject.result).to be_instance_of(WickedResult)
       end
     end
 
@@ -25,7 +26,7 @@ RSpec.describe WickedPool do
         it "shows the result of the previous roll" do
           args = %w[d12 d8]
           subject = described_class.new(dice: args)
-          roll = subject.roll
+          roll = subject.roll.result
           expect(subject.result).to equal(roll)
         end
       end
