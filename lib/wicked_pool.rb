@@ -2,12 +2,11 @@ require_relative "wicked_result"
 require_relative "wicked_die"
 
 class WickedPool
-  attr_reader :dice, :result, :player
+  attr_reader :dice, :result
 
-  def initialize(dice:, player: "", randomizer: Random)
+  def initialize(dice:, randomizer: Random)
     self.dice = dice.map { |die| WickedDie.create(die: die, randomizer: randomizer) }
     self.randomizer = randomizer
-    self.player = player
   end
 
   def roll
@@ -16,19 +15,15 @@ class WickedPool
   end
 
   def to_s
-    "#{player_display} #{result}"
+    result.to_s
+  end
+
+  def dice_list
+    dice.map(&:to_s).join(", ")
   end
 
   private
 
-  def player_display
-    if player
-      "#{player} rolled"
-    else
-      "Rolled"
-    end
-  end
-
   attr_accessor :randomizer
-  attr_writer :dice, :result, :player
+  attr_writer :dice, :result
 end

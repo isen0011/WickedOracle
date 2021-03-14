@@ -31,5 +31,15 @@ RSpec.describe WickedPool do
         end
       end
     end
+
+    describe "#dice_list" do
+      context "with just two dice" do
+        it "just shows the dice in the pool, not the result" do
+          args = %w[d12 d8]
+          subject = described_class.new(dice: args)
+          expect(subject.dice_list).to eq("d12: unrolled, d8: unrolled")
+        end
+      end
+    end
   end
 end
