@@ -11,6 +11,15 @@ class WickedPool
 
   def roll
     self.result = WickedResult.new(dice)
+    self
+  end
+
+  def to_s
+    result.to_s
+  end
+
+  def dice_list
+    dice.map(&:to_s).join(", ")
   end
 
   private

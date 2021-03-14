@@ -46,7 +46,7 @@ RSpec.describe WickedResult do
       let(:subject) { described_class.new(dice) }
 
       it "shows the results in a nice format" do
-        expect(subject.result).to eq("Rolled 10, 3 (d12: 10, d8: 3)")
+        expect(subject.result).to eq("10, 3 (d12: 10, d8: 3)")
       end
     end
 
@@ -70,7 +70,7 @@ RSpec.describe WickedResult do
       let(:subject) { described_class.new(dice) }
 
       it "includes the advantage die in the highest value" do
-        expect(subject.result).to eq("Rolled 15, 3 (d12: 10, d8: 3, advantage: 5)")
+        expect(subject.result).to eq("15, 3 (d12: 10, d8: 3, advantage: 5)")
       end
     end
   end

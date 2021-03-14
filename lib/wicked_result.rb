@@ -11,7 +11,7 @@ class WickedResult
   end
 
   def result
-    "Rolled #{values.sort.reverse.join(', ')} (#{dice.sort.reverse.map(&:to_s).join(', ')})"
+    "#{values.sort.reverse.join(', ')} (#{dice.sort.reverse.map(&:to_s).join(', ')})"
   end
 
   def advantage_dice
