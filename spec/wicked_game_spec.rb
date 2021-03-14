@@ -1,14 +1,22 @@
 require "spec_helper"
 
 RSpec.describe WickedGame do
-  let(:game)     { described_class.new }
-  let(:event)       { instance_double(Discordrb::Commands::CommandEvent) }
-  let(:member)      { instance_double(Discordrb::Member) }
+  let(:game) { described_class.new }
+  let(:event) { instance_double(Discordrb::Commands::CommandEvent) }
+  let(:member) { instance_double(Discordrb::Member) }
   let(:player_name) { "TestUser" }
 
   before do
     allow(event).to receive(:author).and_return(member)
     allow(member).to receive(:nickname).and_return(player_name)
+  end
+
+  describe "#COMMANDS" do
+    let(:subject) { described_class::COMMANDS }
+    it "returns an array of symbols" do
+      expect(subject).to be_a(Array)
+      expect(subject.sample).to be_a(Symbol)
+    end
   end
 
   describe ".roll" do

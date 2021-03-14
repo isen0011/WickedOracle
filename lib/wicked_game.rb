@@ -2,6 +2,8 @@ require "discordrb"
 require_relative "wicked_pool"
 
 class WickedGame
+  COMMANDS = %i[roll show list]
+
   def initialize
     self.player_pools = {}
   end
