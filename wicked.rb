@@ -12,8 +12,8 @@ puts 'Click on it to invite it to your server.'
 
 game = WickedGame.new()
 
-bot.command :roll do |_event, *args|
-  WickedPool.new(dice: args).roll.to_s
+bot.command :roll do |event, *args|
+  game.roll(args: args, event: event)
 end
 
 at_exit { bot.stop }
