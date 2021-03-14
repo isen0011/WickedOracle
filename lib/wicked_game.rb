@@ -2,7 +2,7 @@ require "discordrb"
 require_relative "wicked_pool"
 
 class WickedGame
-  COMMANDS = %i[roll show list]
+  COMMANDS = %i[roll show list clear]
 
   def initialize
     self.player_pools = {}
@@ -22,7 +22,7 @@ class WickedGame
   end
 
   def list(event:, args:)
-    player_pools.map { |pool, player| "#{player} rolled #{pool}" }.join("\n")
+    player_pools.map { |player, pool| "#{player} rolled #{pool}" }.join("\n")
   end
 
   def clear(event:, args:)
