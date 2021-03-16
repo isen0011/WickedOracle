@@ -54,4 +54,33 @@ RSpec.describe WickedGame do
 
     it "can add or remove advantage dice to the roll"
   end
+
+  describe "#roll_for" do
+    it "can roll for a player other than the current user" do
+      args = %w[Other Character with de Long Name d10 d8 A]
+      subject = game.roll_for(args: args, event: event)
+      expect(subject).to start_with("Other Character with de Long Name rolled")
+      expect(subject).to include("d10")
+      expect(subject).to include("d8")
+      expect(subject).to include("advantage")
+    end
+
+    it "will reroll if the player already has a pool" do
+      args = %w[Other Character with de Long Name d10 d8 A]
+      game.roll_for(args: args, event: event)
+      subject = game.roll_for(args: %w[Other Character with de Long Name], event: event)
+      expect(subject).to start_with("Other Character with de Long Name rolled")
+      expect(subject).to include("d10")
+      expect(subject).to include("d8")
+      expect(subject).to include("advantage")
+    end
+  end
+
+  describe "#show-for" do
+    it "can show the pool for a player other than the current user"
+  end
+
+  describe "#clear-for" do
+    it "can clear the pool for a player other than the current user"
+  end
 end
