@@ -17,7 +17,7 @@ class WickedGame
   # don't need the args(yet), but will still be passed the args.
   def show(event:, args:)
     player = event.author.nickname
-    "#{player}'s current pool is: #{player_pools[player].dice_list}"
+    show_for_player(player: player)
   end
 
   def list(event:, args:)
@@ -40,6 +40,10 @@ class WickedGame
     roll_for_player(player: player, dice: dice, randomizer: randomizer)
   end
 
+  def show_for(event:, args:, randomizer: Random)
+    show_for_player(player: extract_player(args))
+  end
+
   # standard:enable Lint/UnusedMethodArgument
 
   private
@@ -49,7 +53,7 @@ class WickedGame
   attr_accessor :player_pools
 
   def extract_player(args)
-    args[0..first_die_index(args)-1].join(" ")
+    args[0..first_die_index(args) - 1].join(" ")
   end
 
   def extract_dice(args)
@@ -65,5 +69,9 @@ class WickedGame
       player_pools[player] = WickedPool.new(dice: dice, randomizer: randomizer)
     end
     "#{player} rolled #{player_pools[player].roll}"
+  end
+
+  def show_for_player(player:)
+    "#{player}'s current pool is: #{player_pools[player].dice_list}"
   end
 end

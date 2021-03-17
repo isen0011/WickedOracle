@@ -77,7 +77,15 @@ RSpec.describe WickedGame do
   end
 
   describe "#show-for" do
-    it "can show the pool for a player other than the current user"
+    it "can show the pool for a player other than the current user" do
+      args = %w[Other Character with de Long Name d10 d8 A]
+      game.roll_for(args: args, event: event)
+      subject = game.show_for(event: event, args: %w[Other Character with de Long Name])
+      expect(subject).to start_with("Other Character with de Long Name's current pool is:")
+      expect(subject).to include("d10")
+      expect(subject).to include("d8")
+      expect(subject).to include("advantage")
+    end
   end
 
   describe "#clear-for" do
