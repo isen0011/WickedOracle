@@ -89,6 +89,13 @@ RSpec.describe WickedGame do
   end
 
   describe "#clear-for" do
-    it "can clear the pool for a player other than the current user"
+    it "can clear the pool for a player other than the current user" do
+      name_args = %w[Other Character with de Long Name]
+      args = %w[Other Character with de Long Name d10 d8 A]
+      game.roll_for(args: args, event: event)
+      expect(game.list(args: [], event: event)).to include("Other Character with de Long Name")
+      game.clear_for(args: name_args, event: event)
+      expect(game.list(args: [], event: event)).not_to include("Other Character with de Long Name")
+    end
   end
 end

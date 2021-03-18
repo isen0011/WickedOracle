@@ -26,8 +26,7 @@ class WickedGame
 
   def clear(event:, args:)
     player = event.author.nickname
-    player_pools.delete(player)
-    "Removed #{player} from the current conflict"
+    clear_for_player(player: player)
   end
 
   def roll_for(event:, args:, randomizer: Random)
@@ -42,6 +41,10 @@ class WickedGame
 
   def show_for(event:, args:, randomizer: Random)
     show_for_player(player: extract_player(args))
+  end
+
+  def clear_for(event:, args:, randomizer: Random)
+    clear_for_player(player: extract_player(args))
   end
 
   # standard:enable Lint/UnusedMethodArgument
@@ -73,5 +76,10 @@ class WickedGame
 
   def show_for_player(player:)
     "#{player}'s current pool is: #{player_pools[player].dice_list}"
+  end
+
+  def clear_for_player(player:)
+    player_pools.delete(player)
+    "Removed #{player} from the current conflict"
   end
 end
