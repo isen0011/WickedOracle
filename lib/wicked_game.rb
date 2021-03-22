@@ -2,7 +2,7 @@ require "discordrb"
 require_relative "wicked_pool"
 
 class WickedGame
-  COMMANDS = %i[roll show list clear roll_for show_for clear_for]
+  COMMANDS = %i[roll show list clear roll_for show_for clear_for advantage]
 
   def initialize
     self.player_pools = {}
@@ -45,6 +45,15 @@ class WickedGame
 
   def clear_for(event:, args:, randomizer: Random)
     clear_for_player(player: extract_player(args))
+  end
+
+  def advantage(event:, args:)
+    player = if args.size == 1
+      event.author.nickname
+    else
+      args[0...-1].join(" ")
+    end
+    "#{player}: #{player_pools[player].adjust_advantage(args.last)}"
   end
 
   # standard:enable Lint/UnusedMethodArgument

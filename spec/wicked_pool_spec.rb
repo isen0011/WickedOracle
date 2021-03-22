@@ -41,5 +41,41 @@ RSpec.describe WickedPool do
         end
       end
     end
+
+    describe "#adjust_advantage" do
+      context "with just two dice" do
+        it "adds an advantage to the die pool" do
+          args = %w[d12 d8]
+          subject = described_class.new(dice: args)
+          expect(subject.adjust_advantage("+")).to eq("Added an advantage die")
+          expect(subject.dice_list).to eq("d12: unrolled, d8: unrolled, advantage: unrolled")
+        end
+      end
+
+      context "with an advantage die" do
+        it "removes an advantage from the die pool" do
+          args = %w[d12 d8 A]
+          subject = described_class.new(dice: args)
+          expect(subject.adjust_advantage("-")).to eq("Removed an advantage die")
+          expect(subject.dice_list).to eq("d12: unrolled, d8: unrolled")
+        end
+
+        it "adds a second advantage to the die pool" do
+          args = %w[d12 d8 A]
+          subject = described_class.new(dice: args)
+          expect(subject.adjust_advantage("+")).to eq("Added an advantage die")
+          expect(subject.dice_list).to eq("d12: unrolled, d8: unrolled, advantage: unrolled, advantage: unrolled")
+        end
+      end
+
+      context "with two advantage dice" do
+        it "removes an advantage from the die pool" do
+          args = %w[d12 d8 A A]
+          subject = described_class.new(dice: args)
+          expect(subject.adjust_advantage("-")).to eq("Removed an advantage die")
+          expect(subject.dice_list).to eq("d12: unrolled, d8: unrolled, advantage: unrolled")
+        end
+      end
+    end
   end
 end

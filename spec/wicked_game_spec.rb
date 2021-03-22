@@ -51,8 +51,50 @@ RSpec.describe WickedGame do
       game.clear(args: [], event: event)
       expect(game.list(args: [], event: event)).not_to include("TestUser")
     end
+  end
 
-    it "can add or remove advantage dice to the roll"
+  describe "#advantage" do
+    it "can add advantage dice to the current player's roll" do
+      args = %w[d10 d8]
+      game.roll(args: args, event: event)
+      expect(game.advantage(args: ["+"], event: event)).to eq("TestUser: Added an advantage die")
+      expect(game.show(args: [], event: event)).to match(/TestUser's current pool is: d10: \d+, d8: \d, advantage: unrolled/)
+    end
+
+    it "can remove advantage dice from the current player's roll" do
+      args = %w[d10 d8 A]
+      game.roll(args: args, event: event)
+      expect(game.advantage(args: ["-"], event: event)).to eq("TestUser: Removed an advantage die")
+      expect(game.show(args: [], event: event)).to match(/TestUser's current pool is: d10: \d+, d8: \d/)
+    end
+
+    it "can add advantage dice to a given character's roll" do
+      args = %w[Some other Character d10 d8]
+      game.roll_for(args: args, event: event)
+      expect(game.advantage(args: %w[Some other Character +], event: event)).to eq("Some other Character: Added an advantage die")
+      expect(game.show_for(args: %w[Some other Character], event: event)).to match(/Some other Character's current pool is: d10: \d+, d8: \d, advantage: unrolled/)
+    end
+
+    it "can remove advantage dice from a given character's roll" do
+      args = %w[Some other Character d10 d8 A]
+      game.roll_for(args: args, event: event)
+      expect(game.advantage(args: %w[Some other Character -], event: event)).to eq("Some other Character: Removed an advantage die")
+      expect(game.show_for(args: %w[Some other Character], event: event)).to match(/Some other Character's current pool is: d10: \d+, d8: \d/)
+    end
+
+    it "can add a second advantage die" do
+      args = %w[d10 d8 A]
+      game.roll(args: args, event: event)
+      expect(game.advantage(args: ["+"], event: event)).to eq("TestUser: Added an advantage die")
+      expect(game.show(args: [], event: event)).to match(/TestUser's current pool is: d10: \d+, d8: \d, advantage: \d, advantage: unrolled/)
+    end
+
+    it "can remove one advantage die without removing the second if they have two" do
+      args = %w[d10 d8 A A]
+      game.roll(args: args, event: event)
+      expect(game.advantage(args: ["-"], event: event)).to eq("TestUser: Removed an advantage die")
+      expect(game.show(args: [], event: event)).to match(/TestUser's current pool is: d10: \d+, d8: \d, advantage: \d/)
+    end
   end
 
   describe "#roll_for" do
