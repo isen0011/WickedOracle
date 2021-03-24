@@ -103,7 +103,7 @@ RSpec.describe WickedResult do
   describe "#standard_dice" do
     let(:standard_dice) do
       [WickedDie.create(die: "d8"),
-       WickedDie.create(die: "d12")]
+        WickedDie.create(die: "d12")]
     end
 
     let(:dice) { standard_dice.clone }
