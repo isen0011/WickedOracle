@@ -25,6 +25,17 @@ RSpec.describe WickedDie do
           end
         end
 
+        describe "#value" do
+          it "returns 0 when it hasn't been rolled yet" do
+            expect(subject.value).to eq(0)
+          end
+
+          it "uses a randomizer to return the value if it is rolled" do
+            subject.roll
+            expect(subject.value).to eq(random_result)
+          end
+        end
+
         describe "#result" do
           it "returns unrolled when it hasn't been rolled yet" do
             expect(subject.result).to eq("unrolled")
@@ -64,6 +75,17 @@ RSpec.describe WickedDie do
 
         it "has the advantage flag set" do
           expect(subject.advantage).to be_truthy
+        end
+      end
+
+      describe ".value" do
+        it "returns 0 when it hasn't been rolled yet" do
+          expect(subject.value).to eq(0)
+        end
+
+        it "uses a randomizer to return the value if it is rolled" do
+          subject.roll
+          expect(subject.value).to eq(random_result)
         end
       end
 

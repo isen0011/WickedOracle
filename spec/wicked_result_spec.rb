@@ -73,6 +73,31 @@ RSpec.describe WickedResult do
         expect(subject.result).to eq("15, 3 (d12: 10, d8: 3, advantage: 5)")
       end
     end
+
+    context "when given an unrolled advantage dite" do
+      let(:randomizer1) { class_double(Random) }
+      let(:randomizer2) { class_double(Random) }
+      let(:randomizerA) { class_double(Random) }
+
+      before do
+        allow(randomizer1).to receive(:rand).and_return(3)
+        allow(randomizer2).to receive(:rand).and_return(10)
+        allow(randomizerA).to receive(:rand).and_return(5)
+      end
+
+      let(:dice) do
+        [WickedDie.create(die: "d8", randomizer: randomizer1),
+         WickedDie.create(die: "d12", randomizer: randomizer2)]
+      end
+
+      let(:advantage_die) { WickedDie.create(die: "A", randomizer: randomizerA) }
+
+      it "should show the advantage die as unrolled" do
+        subject = described_class.new(dice)
+        dice.push(advantage_die)
+        expect(subject.result).to eq("10, 3 (d12: 10, d8: 3, advantage: unrolled)")
+      end
+    end
   end
 
   describe "#advantage_dice" do

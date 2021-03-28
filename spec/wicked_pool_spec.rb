@@ -32,6 +32,18 @@ RSpec.describe WickedPool do
       end
     end
 
+    describe "#to_s" do
+      context "with an unrolled advantage die" do
+        it "shows the unrolled die, but doesn't roll it" do
+          args = %w[d12 d8]
+          subject = described_class.new(dice: args)
+          subject.roll
+          subject.adjust_advantage("+")
+          expect(subject.to_s).to match(/\d+, \d+ \(d12: \d+, d8: \d+, advantage: unrolled\)/)
+        end
+      end
+    end
+
     describe "#dice_list" do
       context "with just two dice" do
         it "just shows the dice in the pool, not the result" do

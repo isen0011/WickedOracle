@@ -23,11 +23,11 @@ class WickedResult
   end
 
   def unmodified_values
-    standard_dice.map(&:result).sort.reverse
+    standard_dice.map(&:value).sort.reverse
   end
 
   def advantage_sum
-    advantage_dice.map(&:result).sum
+    advantage_dice.map(&:value).sum
   end
 
   def to_s
