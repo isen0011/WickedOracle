@@ -8,7 +8,7 @@ class WickedDie
     end
   end
 
-  attr_reader :sides, :advantage, :result
+  attr_reader :sides, :advantage, :value
 
   def <=>(other)
     if advantage?
@@ -24,11 +24,11 @@ class WickedDie
     self.sides = die[1..].to_i
     self.advantage = false
     self.randomizer = randomizer
-    self.result = "unrolled"
+    self.value = 0
   end
 
   def roll
-    self.result = randomizer.rand(1..sides)
+    self.value = randomizer.rand(1..sides)
   end
 
   def to_s
@@ -39,10 +39,14 @@ class WickedDie
     advantage
   end
 
+  def result
+    value == 0 ? "unrolled" : value
+  end
+
   private
 
   attr_accessor :randomizer
-  attr_writer :sides, :advantage, :result
+  attr_writer :sides, :advantage, :value
 end
 
 class AdvantageDie < WickedDie
@@ -50,7 +54,7 @@ class AdvantageDie < WickedDie
     self.advantage = true
     self.randomizer = randomizer
     self.sides = 6
-    self.result = "unrolled"
+    self.value = 0
   end
 
   def to_s

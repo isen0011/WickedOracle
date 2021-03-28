@@ -19,6 +19,24 @@ RSpec.describe WickedGame do
     end
   end
 
+  describe "#list" do
+    it "correctly displays pools with unrolled dice" do
+      randomizer = class_double(Random)
+      allow(randomizer).to receive(:rand).with(1..12).and_return(7)
+      allow(randomizer).to receive(:rand).with(1..4).and_return(2)
+
+      roll_args = %w[d12 d4]
+      game.roll(args: roll_args, event: event, randomizer: randomizer)
+
+      adv_args = %w[+]
+      game.advantage(event: event, args: adv_args)
+
+      subject = game.list(event: event, args: [])
+
+      expect(subject).to eq("TestUser rolled 7, 2 (d12: 7, d4: 2, advantage: unrolled)")
+    end
+  end
+
   describe ".roll" do
     it "rolls the dice given for the player" do
       randomizer = class_double(Random)
