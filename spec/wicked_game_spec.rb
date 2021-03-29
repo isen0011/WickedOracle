@@ -29,7 +29,7 @@ RSpec.describe WickedGame do
       game.roll(args: roll_args, event: event, randomizer: randomizer)
 
       adv_args = %w[+]
-      game.advantage(event: event, args: adv_args)
+      game.adv(event: event, args: adv_args)
 
       subject = game.list(event: event, args: [])
 
@@ -71,46 +71,46 @@ RSpec.describe WickedGame do
     end
   end
 
-  describe "#advantage" do
+  describe "#adv" do
     it "can add advantage dice to the current player's roll" do
       args = %w[d10 d8]
       game.roll(args: args, event: event)
-      expect(game.advantage(args: ["+"], event: event)).to eq("TestUser: Added an advantage die")
+      expect(game.adv(args: ["+"], event: event)).to eq("TestUser: Added an advantage die")
       expect(game.show(args: [], event: event)).to match(/TestUser's current pool is: d10: \d+, d8: \d, advantage: unrolled/)
     end
 
     it "can remove advantage dice from the current player's roll" do
       args = %w[d10 d8 A]
       game.roll(args: args, event: event)
-      expect(game.advantage(args: ["-"], event: event)).to eq("TestUser: Removed an advantage die")
+      expect(game.adv(args: ["-"], event: event)).to eq("TestUser: Removed an advantage die")
       expect(game.show(args: [], event: event)).to match(/TestUser's current pool is: d10: \d+, d8: \d/)
     end
 
     it "can add advantage dice to a given character's roll" do
       args = %w[Some other Character d10 d8]
       game.roll_for(args: args, event: event)
-      expect(game.advantage(args: %w[Some other Character +], event: event)).to eq("Some other Character: Added an advantage die")
+      expect(game.adv(args: %w[Some other Character +], event: event)).to eq("Some other Character: Added an advantage die")
       expect(game.show_for(args: %w[Some other Character], event: event)).to match(/Some other Character's current pool is: d10: \d+, d8: \d, advantage: unrolled/)
     end
 
     it "can remove advantage dice from a given character's roll" do
       args = %w[Some other Character d10 d8 A]
       game.roll_for(args: args, event: event)
-      expect(game.advantage(args: %w[Some other Character -], event: event)).to eq("Some other Character: Removed an advantage die")
+      expect(game.adv(args: %w[Some other Character -], event: event)).to eq("Some other Character: Removed an advantage die")
       expect(game.show_for(args: %w[Some other Character], event: event)).to match(/Some other Character's current pool is: d10: \d+, d8: \d/)
     end
 
     it "can add a second advantage die" do
       args = %w[d10 d8 A]
       game.roll(args: args, event: event)
-      expect(game.advantage(args: ["+"], event: event)).to eq("TestUser: Added an advantage die")
+      expect(game.adv(args: ["+"], event: event)).to eq("TestUser: Added an advantage die")
       expect(game.show(args: [], event: event)).to match(/TestUser's current pool is: d10: \d+, d8: \d, advantage: \d, advantage: unrolled/)
     end
 
     it "can remove one advantage die without removing the second if they have two" do
       args = %w[d10 d8 A A]
       game.roll(args: args, event: event)
-      expect(game.advantage(args: ["-"], event: event)).to eq("TestUser: Removed an advantage die")
+      expect(game.adv(args: ["-"], event: event)).to eq("TestUser: Removed an advantage die")
       expect(game.show(args: [], event: event)).to match(/TestUser's current pool is: d10: \d+, d8: \d, advantage: \d/)
     end
   end
