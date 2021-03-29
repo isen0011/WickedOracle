@@ -1,4 +1,5 @@
 class WickedResult
+  include Comparable
   attr_reader :dice
 
   def initialize(dice)
@@ -11,7 +12,7 @@ class WickedResult
   end
 
   def result
-    "#{values.sort.reverse.join(', ')} (#{dice.sort.reverse.map(&:to_s).join(', ')})"
+    "#{ordered_values.join(", ")} (#{dice.sort.reverse.map(&:to_s).join(", ")})"
   end
 
   def advantage_dice
@@ -32,6 +33,14 @@ class WickedResult
 
   def to_s
     result
+  end
+
+  def <=>(other)
+    ordered_values <=> other.ordered_values
+  end
+
+  def ordered_values
+    values.sort.reverse
   end
 
   private

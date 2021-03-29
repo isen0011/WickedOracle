@@ -35,6 +35,57 @@ RSpec.describe WickedGame do
 
       expect(subject).to eq("TestUser rolled 7, 2 (d12: 7, d4: 2, advantage: unrolled)")
     end
+
+    it "displays players in order of their highest roll" do
+      first_players_dice = %w[d12 d8 d10]
+      first_players_name = %w[First player]
+      first_players_args = first_players_name + first_players_dice
+      first_players_rolls = class_double(Random)
+      allow(first_players_rolls).to receive(:rand).with(1..12).and_return(7)
+      allow(first_players_rolls).to receive(:rand).with(1..10).and_return(7)
+      allow(first_players_rolls).to receive(:rand).with(1..8).and_return(7)
+
+      game.roll(args: first_players_args, event: event, randomizer: first_players_rolls)
+
+      second_players_dice = %w[d10 d8]
+      second_players_name = %w[Secondus playerous]
+      second_players_args = second_players_name + second_players_dice
+      second_players_rolls = class_double(Random)
+      allow(second_players_rolls).to receive(:rand).with(1..10).and_return(8)
+      allow(second_players_rolls).to receive(:rand).with(1..8).and_return(2)
+
+      game.roll(args: second_players_args, event: event, randomizer: second_players_rolls)
+
+      third_players_dice = %w[d10 d8 A]
+      third_players_name = %w[Triad]
+      third_players_args = third_players_name + third_players_dice
+      third_players_rolls = class_double(Random)
+      allow(third_players_rolls).to receive(:rand).with(1..10).and_return(6)
+      allow(third_players_rolls).to receive(:rand).with(1..8).and_return(6)
+      allow(third_players_rolls).to receive(:rand).with(1..6).and_return(2)
+
+      game.roll(args: third_players_args, event: event, randomizer: third_players_rolls)
+
+      fourth_players_dice = %w[d10 d8 d4]
+      fourth_players_name = %w[Fourthy]
+      fourth_players_args = fourth_players_name + fourth_players_dice
+      fourth_players_rolls = class_double(Random)
+      allow(fourth_players_rolls).to receive(:rand).with(1..10).and_return(8)
+      allow(fourth_players_rolls).to receive(:rand).with(1..8).and_return(6)
+      allow(fourth_players_rolls).to receive(:rand).with(1..4).and_return(1)
+
+      game.roll(args: fourth_players_args, event: event, randomizer: fourth_players_rolls)
+
+      subject = game.list(args: [], event: event)
+
+      expect(subject).to eq(<<~LISTING.chomp
+        Fourthy rolled 8, 6, 1 (d10: 8, d8: 6, d4: 1)
+        Triad rolled 8, 6 (d10: 6, d8: 6, advantage: 2)
+        Secondus playerous rolled 8, 2 (d10: 8, d8: 2)
+        First player rolled 7, 7, 7 (d12: 7, d10: 7, d8: 7)
+      LISTING
+                           )
+    end
   end
 
   describe "#roll" do

@@ -21,7 +21,7 @@ class WickedGame
   # standard:disable Lint/UnusedMethodArgument for the following, which
   # don't need the args(yet), but will still be passed the args.
   def list(event:, args:)
-    player_pools.map { |player, pool| "#{player} rolled #{pool}" }.join("\n")
+    sorted_player_pools.map { |player, pool| "#{player} rolled #{pool}" }.join("\n")
   end
   # standard:enable Lint/UnusedMethodArgument
 
@@ -79,5 +79,9 @@ class WickedGame
   def clear_for_player(player:)
     player_pools.delete(player)
     "Removed #{player} from the current conflict"
+  end
+
+  def sorted_player_pools
+    player_pools.sort_by { |key, value| value }.reverse.to_h
   end
 end
