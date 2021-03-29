@@ -37,7 +37,7 @@ RSpec.describe WickedGame do
     end
   end
 
-  describe ".roll" do
+  describe "#roll" do
     it "rolls the dice given for the player" do
       randomizer = class_double(Random)
       allow(randomizer).to receive(:rand).with(1..12).and_return(7)
@@ -50,25 +50,27 @@ RSpec.describe WickedGame do
       expect(subject).to eq("TestUser rolled 10, 5, 2 (d12: 7, d8: 5, d4: 2, advantage: 3)")
     end
 
-    it "stores the dice rolled for the player" do
-      randomizer = class_double(Random)
-      allow(randomizer).to receive(:rand).with(1..10).and_return(7)
-      allow(randomizer).to receive(:rand).with(1..8).and_return(5)
-      allow(randomizer).to receive(:rand).with(1..6).and_return(3)
-
-      args = %w[d10 d8 A]
-      game.roll(args: args, event: event, randomizer: randomizer)
-      subject = game.show(args: args, event: event)
-      expect(subject).to eq("TestUser's current pool is: d10: 7, d8: 5, advantage: 3")
+    it "can roll for a player other than the current user" do
+      args = %w[Other Character with de Long Name d10 d8 A]
+      subject = game.roll(args: args, event: event)
+      expect(subject).to start_with("Other Character with de Long Name rolled")
+      expect(subject).to include("d10")
+      expect(subject).to include("d8")
+      expect(subject).to include("advantage")
     end
 
-    it "can clear a player's pool" do
-      args = %w[d10 d8 A]
-      game.roll(args: args, event: event)
-      expect(game.list(args: [], event: event)).to include("TestUser")
-      game.clear(args: [], event: event)
-      expect(game.list(args: [], event: event)).not_to include("TestUser")
+    it "can re-roll for a player other than the current user" do
+      dice_args = %w[Other Character with de Long Name d10 d8 A]
+      game.roll(args: dice_args, event: event)
+      name_args = %w[Other Character with de Long Name]
+      subject = game.roll(args: name_args, event: event)
+
+      expect(subject).to start_with("Other Character with de Long Name rolled")
+      expect(subject).to include("d10")
+      expect(subject).to include("d8")
+      expect(subject).to include("advantage")
     end
+
   end
 
   describe "#adv" do
@@ -88,16 +90,16 @@ RSpec.describe WickedGame do
 
     it "can add advantage dice to a given character's roll" do
       args = %w[Some other Character d10 d8]
-      game.roll_for(args: args, event: event)
+      game.roll(args: args, event: event)
       expect(game.adv(args: %w[Some other Character +], event: event)).to eq("Some other Character: Added an advantage die")
-      expect(game.show_for(args: %w[Some other Character], event: event)).to match(/Some other Character's current pool is: d10: \d+, d8: \d, advantage: unrolled/)
+      expect(game.show(args: %w[Some other Character], event: event)).to match(/Some other Character's current pool is: d10: \d+, d8: \d, advantage: unrolled/)
     end
 
     it "can remove advantage dice from a given character's roll" do
       args = %w[Some other Character d10 d8 A]
-      game.roll_for(args: args, event: event)
+      game.roll(args: args, event: event)
       expect(game.adv(args: %w[Some other Character -], event: event)).to eq("Some other Character: Removed an advantage die")
-      expect(game.show_for(args: %w[Some other Character], event: event)).to match(/Some other Character's current pool is: d10: \d+, d8: \d/)
+      expect(game.show(args: %w[Some other Character], event: event)).to match(/Some other Character's current pool is: d10: \d+, d8: \d/)
     end
 
     it "can add a second advantage die" do
@@ -115,32 +117,23 @@ RSpec.describe WickedGame do
     end
   end
 
-  describe "#roll_for" do
-    it "can roll for a player other than the current user" do
-      args = %w[Other Character with de Long Name d10 d8 A]
-      subject = game.roll_for(args: args, event: event)
-      expect(subject).to start_with("Other Character with de Long Name rolled")
-      expect(subject).to include("d10")
-      expect(subject).to include("d8")
-      expect(subject).to include("advantage")
+  describe "#show" do
+    it "stores the dice rolled for the player" do
+      randomizer = class_double(Random)
+      allow(randomizer).to receive(:rand).with(1..10).and_return(7)
+      allow(randomizer).to receive(:rand).with(1..8).and_return(5)
+      allow(randomizer).to receive(:rand).with(1..6).and_return(3)
+
+      args = %w[d10 d8 A]
+      game.roll(args: args, event: event, randomizer: randomizer)
+      subject = game.show(args: args, event: event)
+      expect(subject).to eq("TestUser's current pool is: d10: 7, d8: 5, advantage: 3")
     end
 
-    it "will reroll if the player already has a pool" do
-      args = %w[Other Character with de Long Name d10 d8 A]
-      game.roll_for(args: args, event: event)
-      subject = game.roll_for(args: %w[Other Character with de Long Name], event: event)
-      expect(subject).to start_with("Other Character with de Long Name rolled")
-      expect(subject).to include("d10")
-      expect(subject).to include("d8")
-      expect(subject).to include("advantage")
-    end
-  end
-
-  describe "#show-for" do
     it "can show the pool for a player other than the current user" do
       args = %w[Other Character with de Long Name d10 d8 A]
-      game.roll_for(args: args, event: event)
-      subject = game.show_for(event: event, args: %w[Other Character with de Long Name])
+      game.roll(args: args, event: event)
+      subject = game.show(event: event, args: %w[Other Character with de Long Name])
       expect(subject).to start_with("Other Character with de Long Name's current pool is:")
       expect(subject).to include("d10")
       expect(subject).to include("d8")
@@ -148,13 +141,21 @@ RSpec.describe WickedGame do
     end
   end
 
-  describe "#clear-for" do
+  describe "#clear" do
+    it "can clear a player's pool" do
+      args = %w[d10 d8 A]
+      game.roll(args: args, event: event)
+      expect(game.list(args: [], event: event)).to include("TestUser")
+      game.clear(args: [], event: event)
+      expect(game.list(args: [], event: event)).not_to include("TestUser")
+    end
+
     it "can clear the pool for a player other than the current user" do
       name_args = %w[Other Character with de Long Name]
       args = %w[Other Character with de Long Name d10 d8 A]
-      game.roll_for(args: args, event: event)
+      game.roll(args: args, event: event)
       expect(game.list(args: [], event: event)).to include("Other Character with de Long Name")
-      game.clear_for(args: name_args, event: event)
+      game.clear(args: name_args, event: event)
       expect(game.list(args: [], event: event)).not_to include("Other Character with de Long Name")
     end
   end
