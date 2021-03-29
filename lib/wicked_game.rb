@@ -2,7 +2,7 @@ require "discordrb"
 require_relative "wicked_pool"
 
 class WickedGame
-  COMMANDS = %i[roll show list clear roll_for show_for clear_for advantage]
+  COMMANDS = %i[roll show list clear roll_for show_for clear_for adv]
 
   def initialize
     self.player_pools = {}
@@ -47,7 +47,7 @@ class WickedGame
     clear_for_player(player: extract_player(args))
   end
 
-  def advantage(event:, args:)
+  def adv(event:, args:)
     player = if args.size == 1
       event.author.nickname
     else
