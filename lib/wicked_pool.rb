@@ -2,6 +2,7 @@ require_relative "wicked_result"
 require_relative "wicked_die"
 
 class WickedPool
+  include Comparable
   attr_reader :dice, :result
 
   def initialize(dice:, randomizer: Random)
@@ -29,6 +30,10 @@ class WickedPool
     else
       remove_advantage
     end
+  end
+
+  def <=>(other)
+    result <=> other.result
   end
 
   private
