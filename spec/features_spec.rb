@@ -14,16 +14,10 @@ RSpec.describe "Feature Tests" do
     end
 
     it "reuses a pool for a player if it already has one" do
-      pending
-      randomizer = class_double(Random)
-      allow(randomizer).to receive(:rand).with(1..10).and_return(4)
-      allow(randomizer).to receive(:rand).with(1..8).and_return(2)
-      allow(randomizer).to receive(:rand).with(1..6).and_return(1)
-
       args = %w[d10 d8 A]
       game.roll(args: args, event: event)
-      subject = game.roll(args: [], event: event, randomizer: randomizer)
-      expect(subject).to eq("TestUser rolled 7, 2 (d10: 4, d8: 2, advantage: 1)")
+      subject = game.roll(args: [], event: event)
+      expect(subject).to match(/TestUser rolled \d+, \d+ \(d10: \d+, d8: \d, advantage: \d\)/)
     end
   end
 
