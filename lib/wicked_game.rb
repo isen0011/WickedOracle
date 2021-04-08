@@ -2,7 +2,7 @@ require "discordrb"
 require_relative "wicked_pool"
 
 class WickedGame
-  COMMANDS = %i[roll show list clear adv]
+  COMMANDS = %i[roll show list clear adv help]
 
   def initialize
     self.player_pools = {}
@@ -22,6 +22,17 @@ class WickedGame
   # don't need the args(yet), but will still be passed the args.
   def list(event:, args:)
     sorted_player_pools.map { |player, pool| "#{player} rolled #{pool}" }.join("\n")
+  end
+
+  def help(event:, args:)
+    <<~HELP
+      /roll [character] [dX] [dX] [dX] [A] - roll dice (for character) - if no dice given, rolls last known dice
+      /show [character] - shows current dice pool for character
+      /list - shows all character's current dice pools and results
+      /clear [character] - clears character's current dice pool
+      /adv [character] [+|-] - Adds or removes an advantage die from character's pool
+      NOTE: if [character] is omitted, the current player's name will be used
+    HELP
   end
   # standard:enable Lint/UnusedMethodArgument
 
