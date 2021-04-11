@@ -210,4 +210,19 @@ RSpec.describe WickedGame do
       expect(game.list(args: [], event: event)).not_to include("Other Character with de Long Name")
     end
   end
+
+  describe "#clear_all" do
+    it "can clear all player's pools" do
+      args = %w[d10 d8 A]
+      game.roll(args: args, event: event)
+      expect(game.list(args: [], event: event)).to include("TestUser")
+      name_args = %w[Other Character with de Long Name d10 d8 A]
+      game.roll(args: name_args, event: event)
+      expect(game.list(args: [], event: event)).to include("Other Character with de Long Name")
+
+      subject = game.clear_all(args: [], event: event)
+      expect(subject).to eq("Cleared all pools: TestUser, Other Character with de Long Name")
+      expect(game.list(args: [], event: event)).to be_empty
+    end
+  end
 end

@@ -2,7 +2,7 @@ require "discordrb"
 require_relative "wicked_pool"
 
 class WickedGame
-  COMMANDS = %i[roll show list clear adv help]
+  COMMANDS = %i[roll show list clear adv help clear_all]
 
   def initialize
     self.player_pools = {}
@@ -34,6 +34,13 @@ class WickedGame
       NOTE: if [character] is omitted, the current player's name will be used
     HELP
   end
+
+  def clear_all(event:, args:)
+    players = player_pools.keys
+    players.each { |player| clear_for_player(player: player) }
+    "Cleared all pools: #{players.join(", ")}"
+  end
+
   # standard:enable Lint/UnusedMethodArgument
 
   def clear(event:, args:)
