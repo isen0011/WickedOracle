@@ -77,8 +77,10 @@ class WickedGame
   end
 
   def roll_for_player(player:, dice:, randomizer: Random)
-    if !player_pools.has_key?(player) || !dice.empty?
+    if !dice.empty?
       player_pools[player] = WickedPool.new(dice: dice, randomizer: randomizer)
+    elsif !player_pools.has_key?(player)
+      return "Character #{player} has no current dice pool, and no dice were provided"
     end
     "#{player} rolled #{player_pools[player].roll}"
   end

@@ -19,6 +19,12 @@ RSpec.describe "Feature Tests" do
       subject = game.roll(args: [], event: event)
       expect(subject).to match(/TestUser rolled \d+, \d+ \(d10: \d+, d8: \d, advantage: \d\)/)
     end
+
+    it "handles bad input" do
+      args = %w[d-1]
+      subject = game.roll(args: args, event: event)
+      expect(subject).to eq("Character d-1 has no current dice pool, and no dice were provided")
+    end
   end
 
   describe "Started and ending conflict" do
