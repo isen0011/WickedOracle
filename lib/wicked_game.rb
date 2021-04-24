@@ -45,9 +45,11 @@ class WickedGame
       /list - shows all character's current dice pools and results
       /clear [character] - clears character's current dice pool
       /adv [character] [+|-] - Adds or removes an advantage die from character's pool
+      /clear_all - clears all dice in all pools
       /start_conflict [conflict name] - starts a new conflict.  A name for the conflict is required.
       /show_conflicts - shows all conflicts
       NOTE: if [character] is omitted, the current player's name will be used
+      NOTE: [character] allows for partial name lookups if the character is already in the conflict
     HELP
   end
 
