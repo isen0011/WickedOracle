@@ -1,11 +1,13 @@
 require "discordrb"
 require_relative "wicked_pool"
+require_relative "wicked_conflict"
 
 class WickedGame
-  COMMANDS = %i[roll show list clear adv help clear_all]
+  COMMANDS = %i[roll show list clear adv help clear_all start_conflict show_conflicts]
 
   def initialize
     self.player_pools = {}
+    self.conflicts = {}
   end
 
   def roll(event:, args:, randomizer: Random)
@@ -22,6 +24,16 @@ class WickedGame
 
   # standard:disable Lint/UnusedMethodArgument for the following, which
   # don't need the args(yet), but will still be passed the args.
+  def start_conflict(event:, args:)
+    conflict = WickedConflict.new(args.join(" "))
+    conflicts[conflict.name] = conflict
+    "Started new conflict: #{conflict.name}"
+  end
+
+  def show_conflicts(event:, args:)
+    "List of conflicts:\n#{conflicts.keys.map { |key| "- #{key}" }.join("\n")}"
+  end
+
   def list(event:, args:)
     sorted_player_pools.map { |player, pool| "#{player} rolled #{pool}" }.join("\n")
   end
@@ -33,6 +45,8 @@ class WickedGame
       /list - shows all character's current dice pools and results
       /clear [character] - clears character's current dice pool
       /adv [character] [+|-] - Adds or removes an advantage die from character's pool
+      /start_conflict [conflict name] - starts a new conflict.  A name for the conflict is required.
+      /show_conflicts - shows all conflicts
       NOTE: if [character] is omitted, the current player's name will be used
     HELP
   end
@@ -64,7 +78,7 @@ class WickedGame
 
   DIE_REGEX = /d\d{1,2}/
 
-  attr_accessor :player_pools
+  attr_accessor :player_pools, :conflicts
 
   def extract_player(args, event)
     player = passed_player(args)

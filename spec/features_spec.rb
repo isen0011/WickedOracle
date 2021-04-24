@@ -2,9 +2,9 @@ require "spec_helper"
 
 RSpec.describe "Feature Tests" do
   let(:player) { "TestUser" }
+  let(:game)    { WickedGame.new }
 
   describe "Remembers player's pools" do
-    let(:game)    { WickedGame.new }
     let(:event)   { instance_double(Discordrb::Commands::CommandEvent) }
     let(:member)  { instance_double(Discordrb::Member) }
 
@@ -29,7 +29,6 @@ RSpec.describe "Feature Tests" do
 
   describe "Started and ending conflict" do
     it "will remember dice within the conflict" do
-      pending
       expect(game.start_conflict).to eq("Conflict started!")
       expect(game.list).to eq("No current players in conflict")
       expect(game.join(args: %w[d8 d4], player: "Player1")).to eq("Player1 joined the conflict with pool: d8, d4")

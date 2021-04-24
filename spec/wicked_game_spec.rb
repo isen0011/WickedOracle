@@ -19,6 +19,21 @@ RSpec.describe WickedGame do
     end
   end
 
+  describe "#start_conflict" do
+    it "Lists the name of the newly started conflict" do
+      args = %w[Fight 1 for Fluffy Bunnies!]
+      expect(game.start_conflict(args: args, event: event)).to eq("Started new conflict: Fight 1 for Fluffy Bunnies!")
+    end
+  end
+
+  describe "#show_conflicts" do
+    it "shows a new conflict in the internal list" do
+      args = %w[Fight 1 for Fluffy Bunnies!]
+      game.start_conflict(args: args, event: event)
+      expect(game.show_conflicts(args: [], event: event)).to eq("List of conflicts:\n- Fight 1 for Fluffy Bunnies!")
+    end
+  end
+
   describe "#list" do
     it "correctly displays pools with unrolled dice" do
       randomizer = class_double(Random)
