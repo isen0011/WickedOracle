@@ -122,6 +122,28 @@ RSpec.describe WickedGame do
       expect(subject).to include("advantage")
     end
 
+    it "can look up a player by a shortend version of their name" do
+      dice_args = %w[Other Character with de Long Name d10 d8 A]
+      game.roll(args: dice_args, event: event)
+      name_args = %w[Other]
+      subject = game.roll(args: name_args, event: event)
+
+      expect(subject).to start_with("Other Character with de Long Name rolled")
+      expect(subject).to include("d10")
+      expect(subject).to include("d8")
+      expect(subject).to include("advantage")
+    end
+
+    it "will fail to look up a player when there is more than one possibility" do
+      first_player_args = %w[player one d10 d8 A]
+      game.roll(args: first_player_args, event: event)
+      second_player_args = %w[player two d10 d8 A]
+      game.roll(args: second_player_args, event: event)
+      name_args = %w[play]
+      subject = game.roll(args: name_args, event: event)
+
+      expect(subject).to eq("Error- two matching characters: player one, player two")
+    end
   end
 
   describe "#adv" do

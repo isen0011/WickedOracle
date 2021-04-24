@@ -10,12 +10,14 @@ class WickedGame
 
   def roll(event:, args:, randomizer: Random)
     player = extract_player(args, event)
-    roll_for_player(player: player, dice: extract_dice(args), randomizer: randomizer)
+    return "Error- two matching characters: #{player.join(", ")}" unless player.length == 1
+    roll_for_player(player: player.first, dice: extract_dice(args), randomizer: randomizer)
   end
 
   def show(event:, args:)
     player = extract_player(args, event)
-    show_for_player(player: player)
+    return "Error- two matching characters: #{player.join(", ")}" unless player.length == 1
+    show_for_player(player: player.first)
   end
 
   # standard:disable Lint/UnusedMethodArgument for the following, which
@@ -45,7 +47,8 @@ class WickedGame
 
   def clear(event:, args:)
     player = extract_player(args, event)
-    clear_for_player(player: player)
+    return "Error- two matching characters: #{player.join(", ")}" unless player.length == 1
+    clear_for_player(player: player.first)
   end
 
   def adv(event:, args:)
@@ -66,13 +69,22 @@ class WickedGame
   def extract_player(args, event)
     player = passed_player(args)
     if player == ""
-      player = event.author.nickname
+      [event.author.nickname]
+    else
+      player_lookup(player)
     end
-    player
   end
 
   def passed_player(args)
     args.take(first_die_index(args)).join(" ")
+  end
+
+  def player_lookup(player)
+    if player_pools.keys.find { |key| key.start_with?(player) }
+      player_pools.keys.filter { |key| key.start_with?(player) }
+    else
+      [player]
+    end
   end
 
   def extract_dice(args)
