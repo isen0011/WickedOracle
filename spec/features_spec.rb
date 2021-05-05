@@ -3,9 +3,9 @@ require "spec_helper"
 RSpec.describe "Feature Tests" do
   let(:player) { "TestUser" }
   let(:game)    { WickedGame.new }
+  let(:event)   { instance_double(Discordrb::Commands::CommandEvent) }
 
   describe "Remembers player's pools" do
-    let(:event)   { instance_double(Discordrb::Commands::CommandEvent) }
     let(:member)  { instance_double(Discordrb::Member) }
 
     before do
@@ -29,13 +29,13 @@ RSpec.describe "Feature Tests" do
 
   describe "Started and ending conflict" do
     it "will remember dice within the conflict" do
-      expect(game.start_conflict).to eq("Conflict started!")
-      expect(game.list).to eq("No current players in conflict")
+      expect(game.start_conflict(args: %w[Test Conflict], event: event)).to eq("Started new conflict: Test Conflict")
+      expect(game.list(args: [], event: event)).to eq("No current players in conflict Test Conflict")
       expect(game.join(args: %w[d8 d4], player: "Player1")).to eq("Player1 joined the conflict with pool: d8, d4")
       expect(game.join(args: %w[d12 d8 A], player: "Player2")).to eq("Player2 joined the conflict with pool: d12, d8, and an advantage die")
-      expect(game.list).to eq("Current players:\nPlayer1's current pool is: d8, d4\nPlayer2's current pool is: d12, d8, and an advantage die")
-      expect(game.end_conflict).to eq("Conflict ended!")
-      expect(game.list).to eq("No current conflict... use /start_conflict to start a conflict")
+      expect(game.list(args: [], event: event)).to eq("Current players:\nPlayer1's current pool is: d8, d4\nPlayer2's current pool is: d12, d8, and an advantage die")
+      expect(game.end_conflict(args: [], event: event)).to eq("Conflict ended!")
+      expect(game.list(args: [], event: event)).to eq("No current conflict... use /start_conflict to start a conflict")
     end
 
     it "will remember the last rolls of the players" do

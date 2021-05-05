@@ -3,7 +3,7 @@ require_relative "wicked_pool"
 require_relative "wicked_conflict"
 
 class WickedGame
-  COMMANDS = %i[roll show list clear adv help clear_all start_conflict show_conflicts]
+  COMMANDS = %i[roll show list clear adv help clear_all start_conflict show_conflicts current_conflict switch_conflict]
 
   def initialize
     self.player_pools = {}
@@ -27,11 +27,25 @@ class WickedGame
   def start_conflict(event:, args:)
     conflict = WickedConflict.new(args.join(" "))
     conflicts[conflict.name] = conflict
+    self.active_conflict = conflict.name
     "Started new conflict: #{conflict.name}"
   end
 
   def show_conflicts(event:, args:)
-    "List of conflicts:\n#{conflicts.keys.map { |key| "- #{key}" }.join("\n")}"
+    "List of conflicts:\n#{conflicts.keys.map { |key| "- #{key}#{conflict_status(key)}" }.join("\n")}"
+  end
+
+  def current_conflict(event:, args:)
+    "Current conflict: #{active_conflict}"
+  end
+
+  def switch_conflict(event:, args:)
+    if conflicts.key?(args.join(" "))
+      active_conflict = args.join(" ")
+      "Switched conflict to #{active_conflict}"
+    else
+      "Conflict not found: #{args.join(" ")}"
+    end
   end
 
   def list(event:, args:)
@@ -80,7 +94,7 @@ class WickedGame
 
   DIE_REGEX = /d\d{1,2}/
 
-  attr_accessor :player_pools, :conflicts
+  attr_accessor :player_pools, :conflicts, :active_conflict
 
   def extract_player(args, event)
     player = passed_player(args)
@@ -131,5 +145,13 @@ class WickedGame
 
   def sorted_player_pools
     player_pools.sort_by { |key, value| value }.reverse.to_h
+  end
+
+  def conflict_status(conflict_key)
+    if conflict_key == active_conflict
+      " (active)"
+    else
+      ""
+    end
   end
 end

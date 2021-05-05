@@ -26,11 +26,45 @@ RSpec.describe WickedGame do
     end
   end
 
+  describe "#current_conflict" do
+    it "shows the current active conflict" do
+      args = %w[Fluffy Fight]
+      game.start_conflict(args: args, event: event)
+      expect(game.current_conflict(args: [], event: event)).to eq("Current conflict: Fluffy Fight")
+    end
+  end
+
+  describe "#switch_conflict" do
+    it "switches the current active conflict" do
+      conflict_1 = %w[Fluffy Fight]
+      game.start_conflict(args: conflict_1, event: event)
+      expect(game.show_conflicts(args: [], event: event)).to eq("List of conflicts:\n- Fluffy Fight (active)")
+      conflict_2 = %w[Fluffy Fight With Big Bunnies]
+      game.start_conflict(args: conflict_2, event: event)
+      expect(game.show_conflicts(args: [], event: event)).to eq("List of conflicts:\n- Fluffy Fight\n- Fluffy Fight With Big Bunnies (active)")
+      expect(game.switch_conflict(args: conflict_1, event: event)).to eq("Switched conflict to Fluffy Fight")
+      expect(game.current_conflict(args: [], event: event)).to eq("Current conflict: Fluffy Fight")
+      expect(game.show_conflicts(args: [], event: event)).to eq("List of conflicts:\n- Fluffy Fight (active)\n- Fluffy Fight With Big Bunnies")
+    end
+  end
+
   describe "#show_conflicts" do
     it "shows a new conflict in the internal list" do
       args = %w[Fight 1 for Fluffy Bunnies!]
       game.start_conflict(args: args, event: event)
-      expect(game.show_conflicts(args: [], event: event)).to eq("List of conflicts:\n- Fight 1 for Fluffy Bunnies!")
+      expect(game.show_conflicts(args: [], event: event)).to eq("List of conflicts:\n- Fight 1 for Fluffy Bunnies! (active)")
+    end
+
+    it "creates a default conflict if dice are rolled without a conflict being specified" do
+      pending
+      randomizer = class_double(Random)
+      allow(randomizer).to receive(:rand).with(1..12).and_return(7)
+      allow(randomizer).to receive(:rand).with(1..4).and_return(2)
+
+      roll_args = %w[d12 d4]
+      game.roll(args: roll_args, event: event, randomizer: randomizer)
+
+      expect(game.show_conflicts(args: [], event: event)).to eq("List of conflicts: \n- Default")
     end
   end
 
