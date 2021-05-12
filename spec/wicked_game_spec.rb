@@ -89,6 +89,18 @@ RSpec.describe WickedGame do
   end
 
   describe "#roll" do
+    it "rolls the dice given for the player, even with capital letters" do
+      randomizer = class_double(Random)
+      allow(randomizer).to receive(:rand).with(1..12).and_return(7)
+      allow(randomizer).to receive(:rand).with(1..8).and_return(5)
+      allow(randomizer).to receive(:rand).with(1..4).and_return(2)
+      allow(randomizer).to receive(:rand).with(1..6).and_return(3)
+
+      args = %w[D12 d8 D4 A]
+      subject = game.roll(args: args, event: event, randomizer: randomizer)
+      expect(subject).to eq("TestUser rolled 10, 5, 2 (d12: 7, d8: 5, d4: 2, advantage: 3)")
+    end
+
     it "rolls the dice given for the player" do
       randomizer = class_double(Random)
       allow(randomizer).to receive(:rand).with(1..12).and_return(7)

@@ -62,7 +62,7 @@ class WickedGame
 
   private
 
-  DIE_REGEX = /d\d{1,2}/
+  DIE_REGEX = /[dD]\d{1,2}/
 
   attr_accessor :player_pools
 
