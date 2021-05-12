@@ -12,6 +12,15 @@ RSpec.describe WickedPool do
   end
 
   describe "#roll" do
+    context "with captial letters for D" do
+      it "rolls the dice and returns a result object" do
+        args = %w[d12 D8]
+        subject = described_class.new(dice: args)
+        expect(subject.roll).to be_instance_of(WickedPool)
+        expect(subject.result).to be_instance_of(WickedResult)
+      end
+    end
+
     context "with just two dice" do
       it "rolls the dice and returns a result object" do
         args = %w[d12 d8]
